@@ -3,104 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Compilazione Dati Totem - Didacta 2026</title>
+    <title>Compilazione Dati Totem</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f4f4f4; }
-        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; position: relative; }
         input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 12px; background: #226e94; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; font-size: 1.1em; }
-        button:hover { background: #1a5675; }
         
-        /* Stili per l'Instant Win */
-        #risultatoGioco { 
-            margin-top: 20px; 
-            padding: 25px; 
-            text-align: center; 
-            border-radius: 10px; 
+        /* Bottone e Area Messaggio Interna */
+        #container-invio { margin-top: 15px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
+        button { width: 100%; padding: 12px; background: #226e94; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: all 0.3s; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        
+        #messaggio-interno { 
             display: none; 
-            font-weight: bold; 
             width: 100%; 
-            max-width: 400px; 
-            box-sizing: border-box;
-            font-size: 1.2em;
+            padding: 15px; 
+            border-radius: 4px; 
+            text-align: center; 
+            font-weight: bold; 
+            animation: fadeIn 0.5s;
         }
-        .vittoria { background-color: #d4edda; color: #155724; border: 2px solid #c3e6cb; }
-        .sconfitta { background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb; }
+        .vittoria { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .sconfitta { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        input:focus, select:focus { outline: none; border-color: #226e94; box-shadow: 0 0 5px rgba(34, 110, 148, 0.3); }
-        label { font-weight: bold; font-size: 0.9em; color: #333; }
+        label { font-weight: bold; font-size: 0.85em; color: #555; }
     </style>
 </head>
 <body>
 
     <form id="DidactaFirenze" autocomplete="off">
         <img src="logosmallmail.jpg" alt="Logo Didacta" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto 20px auto; border-radius: 8px;">
-        <h2 style="text-align: center; color: #226e94;">Didacta Firenze 2026</h2>
+        <h2 style="text-align: center; color: #226e94; margin-bottom: 20px;">Didacta Firenze 2026</h2>
         
         <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Inserisci il tuo nome" required>
+        <input type="text" id="nome" placeholder="Nome" required>
         
         <label for="cognome">Cognome</label>
-        <input type="text" id="cognome" placeholder="Inserisci il tuo cognome" required>
+        <input type="text" id="cognome" placeholder="Cognome" required>
         
-        <label for="email">Indirizzo email (preferibilmente scolastico)</label>
-        <input type="email" id="email" placeholder="esempio@scuola.it" required>
+        <label for="email">Email</label>
+        <input type="email" id="email" placeholder="Email scolastica" required>
         
-        <label for="istituto">Istituto di provenienza</label>
-        <input type="text" id="istituto" placeholder="Nome della tua scuola" required>
+        <label for="istituto">Istituto</label>
+        <input type="text" id="istituto" placeholder="Istituto di provenienza" required>
         
         <label for="ruolo">Ruolo</label>
         <select id="ruolo" required>
-            <option value="" disabled selected>Seleziona il tuo ruolo...</option>
+            <option value="" disabled selected>Seleziona ruolo...</option>
             <option value="Docente">Docente</option>
             <option value="Dirigente Scolastico">Dirigente Scolastico</option>
-            <option value="Vicepreside">Vicepreside</option>
-            <option value="Dsga">Dsga</option>
-            <option value="Animatore digitale">Animatore digitale</option>
-            <option value="Tecnico di laboratorio">Tecnico di laboratorio</option>
-            <option value="Ufficio tecnico">Ufficio tecnico</option>
             <option value="Personale ATA">Personale ATA</option>
             <option value="Altro">Altro</option>
         </select>
 
-        <label for="ordine_grado">Ordine e grado della scuola</label>
+        <label for="ordine_grado">Ordine e Grado</label>
         <select id="ordine_grado" required>
-            <option value="" disabled selected>Seleziona ordine e grado...</option>
-            <option value="Infanzia">Scuola dell'Infanzia</option>
-            <option value="Primaria">Scuola Primaria</option>
-            <option value="Secondaria I grado">Secondaria di I grado</option>
-            <option value="Secondaria II grado">Secondaria di II grado</option>
-            <option value="Università">Università / Formazione superiore</option>
+            <option value="" disabled selected>Seleziona grado...</option>
+            <option value="Infanzia">Infanzia</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secondaria I">Secondaria I grado</option>
+            <option value="Secondaria II">Secondaria II grado</option>
         </select>
 
         <label for="interessi">Cosa ti porta a Didacta?</label>
-        <input type="text" id="interessi" placeholder="Esempio: Robotica, Innovazione..." required>
+        <input type="text" id="interessi" placeholder="Scrivi qui..." required>
         
-        <button type="submit" id="btnInvia">PARTECIPA E INVIA</button>
+        <div id="container-invio">
+            <button type="submit" id="btnInvia">VERIFICA VINCITA E INVIA</button>
+            <div id="messaggio-interno"></div>
+        </div>
     </form>
 
-    <div id="risultatoGioco"></div>
-
     <script>
-        // CONFIGURAZIONE SUPABASE
         const SUPABASE_URL = 'https://sdfdspmethztfgezdqan.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_uD1PGiDFEmXdp3m3n21Ktw_b7oXouT2'; 
-        
+        const SUPABASE_KEY = 'sb_publishable_uD1PGiDFEmXdp3m3n21Ktw_b7oXouT2';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const form = document.getElementById('DidactaFirenze');
-        const risultatoGioco = document.getElementById('risultatoGioco');
+        const btnInvia = document.getElementById('btnInvia');
+        const msgInterno = document.getElementById('messaggio-interno');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // 1. LOGICA INSTANT WIN (1 possibilità su 10)
+            btnInvia.disabled = true;
+            btnInvia.innerText = "Invio in corso...";
+
+            // Logica Instant Win
             const chance = Math.floor(Math.random() * 10) + 1;
-            const haVinto = (chance === 7); // Vince chi becca il numero 7
+            const haVinto = (chance === 7);
             const esito = haVinto ? "VINTO" : "NON VINTO";
 
-            // 2. PREPARAZIONE PAYLOAD
             const payload = {
                 nome: document.getElementById('nome').value,
                 cognome: document.getElementById('cognome').value,
@@ -109,40 +104,39 @@
                 ruolo: document.getElementById('ruolo').value,
                 ordine_grado: document.getElementById('ordine_grado').value,
                 interessi: document.getElementById('interessi').value,
-                esito_vincita: esito // Assicurati di aver creato questa colonna su Supabase!
+                esito_vincita: esito
             };
 
             try {
-                // 3. INVIO DATI A SUPABASE
-                const { error } = await _supabase
-                    .from('DidactaFirenze')
-                    .insert([payload]);
+                const { error } = await _supabase.from('DidactaFirenze').insert([payload]);
 
-                if (error) {
-                    alert("Errore durante l'invio: " + error.message);
+                if (error) throw error;
+
+                // UI: Sostituisci bottone con esito dentro il form
+                btnInvia.style.display = 'none';
+                msgInterno.style.display = 'block';
+                
+                if (haVinto) {
+                    msgInterno.className = "vittoria";
+                    msgInterno.innerHTML = "🎉 HAI VINTO UN GADGET!<br>Mostra questo messaggio allo staff.";
                 } else {
-                    // 4. FEEDBACK VISIVO (Instant Win)
-                    form.style.display = 'none'; // Nasconde il form
-                    risultatoGioco.style.display = 'block';
-
-                    if (haVinto) {
-                        risultatoGioco.className = "vittoria";
-                        risultatoGioco.innerHTML = "🎉 COMPLIMENTI!<br>HAI VINTO UN GADGET!<br><small>Mostra questo schermo allo stand.</small>";
-                    } else {
-                        risultatoGioco.className = "sconfitta";
-                        risultatoGioco.innerHTML = "Grazie per la visita!<br>Purtroppo non hai vinto,<br>ma passa a trovarci per le novità.";
-                    }
-
-                    // 5. RESET AUTOMATICO DOPO 10 SECONDI
-                    setTimeout(() => {
-                        form.reset();
-                        form.style.display = 'block';
-                        risultatoGioco.style.display = 'none';
-                        risultatoGioco.className = "";
-                    }, 10000);
+                    msgInterno.className = "sconfitta";
+                    msgInterno.innerHTML = "Dati inviati! Purtroppo non hai vinto.<br>Grazie per aver partecipato!";
                 }
+
+                // Reset automatico dopo 8 secondi
+                setTimeout(() => {
+                    form.reset();
+                    msgInterno.style.display = 'none';
+                    btnInvia.style.display = 'block';
+                    btnInvia.disabled = false;
+                    btnInvia.innerText = "VERIFICA VINCITA E INVIA";
+                }, 8000);
+
             } catch (err) {
-                console.error("Errore imprevisto:", err);
+                alert("Errore: " + err.message);
+                btnInvia.disabled = false;
+                btnInvia.innerText = "VERIFICA VINCITA E INVIA";
             }
         });
     </script>
