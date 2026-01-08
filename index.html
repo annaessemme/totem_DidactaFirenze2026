@@ -7,36 +7,27 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f4f4f4; }
-        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; position: relative; }
-        input, select { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        
-        /* Bottone e Area Messaggio Interna */
-        #container-invio { margin-top: 15px; min-height: 60px; display: flex; align-items: center; justify-content: center; }
-        button { width: 100%; padding: 12px; background: #226e94; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 1.1em; transition: all 0.3s; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #226e94; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background: #1a5675; }
         button:disabled { background: #ccc; cursor: not-allowed; }
         
-        #messaggio-interno { 
-            display: none; 
-            width: 100%; 
-            padding: 15px; 
-            border-radius: 4px; 
-            text-align: center; 
-            font-weight: bold; 
-            animation: fadeIn 0.5s;
-        }
-        .vittoria { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .sconfitta { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* Stili per il messaggio interno al form */
+        #container-esito { margin-top: 15px; display: none; text-align: center; }
+        .vittoria { padding: 15px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; font-weight: bold; }
+        .sconfitta { padding: 15px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; font-weight: bold; }
         
-        label { font-weight: bold; font-size: 0.85em; color: #555; }
+        input:focus, select:focus { outline: none; border-color: #226e94; box-shadow: 0 0 5px rgba(34, 110, 148, 0.3); }
+        label { font-weight: bold; display: block; margin-top: 10px; color: #333; }
+        select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; background-color: white; }
     </style>
 </head>
 <body>
 
     <form id="DidactaFirenze" autocomplete="off">
         <img src="logosmallmail.jpg" alt="Logo Didacta" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto 20px auto; border-radius: 8px;">
-        <h2 style="text-align: center; color: #226e94; margin-bottom: 20px;">Didacta Firenze 2026</h2>
+        <h2 style="text-align: center; color: #226e94;">Didacta Firenze 2026</h2>
         
         <label for="nome">Nome</label>
         <input type="text" id="nome" placeholder="Nome" required>
@@ -44,36 +35,45 @@
         <label for="cognome">Cognome</label>
         <input type="text" id="cognome" placeholder="Cognome" required>
         
-        <label for="email">Email</label>
-        <input type="email" id="email" placeholder="Email scolastica" required>
+        <label for="email">Indirizzo email (preferibilmente scolastico)</label>
+        <input type="email" id="email" placeholder="Indirizzo Email" required>
         
-        <label for="istituto">Istituto</label>
+        <label for="istituto">Istituto di provenienza</label>
         <input type="text" id="istituto" placeholder="Istituto di provenienza" required>
         
         <label for="ruolo">Ruolo</label>
         <select id="ruolo" required>
-            <option value="" disabled selected>Seleziona ruolo...</option>
+            <option value="" disabled selected>Seleziona il tuo ruolo...</option>
             <option value="Docente">Docente</option>
             <option value="Dirigente Scolastico">Dirigente Scolastico</option>
+            <option value="Vicepreside">Vicepreside</option>
+            <option value="Dsga">Dsga</option>
+            <option value="Animatore digitale">Animatore digitale</option>
+            <option value="Tecnico di laboratorio">Tecnico di laboratorio</option>
+            <option value="Ufficio tecnico">Ufficio tecnico</option>
             <option value="Personale ATA">Personale ATA</option>
             <option value="Altro">Altro</option>
         </select>
 
-        <label for="ordine_grado">Ordine e Grado</label>
+        <label for="ordine_grado">Ordine e grado della scuola</label>
         <select id="ordine_grado" required>
-            <option value="" disabled selected>Seleziona grado...</option>
-            <option value="Infanzia">Infanzia</option>
-            <option value="Primaria">Primaria</option>
-            <option value="Secondaria I">Secondaria I grado</option>
-            <option value="Secondaria II">Secondaria II grado</option>
+            <option value="" disabled selected>Seleziona ordine e grado...</option>
+            <option value="Infanzia">Scuola dell'Infanzia</option>
+            <option value="Primaria">Scuola Primaria</option>
+            <option value="Secondaria I grado">Secondaria di I grado</option>
+            <option value="Secondaria II grado">Secondaria di II grado</option>
+            <option value="Università">Università / Formazione superiore</option>
         </select>
 
-        <label for="interessi">Cosa ti porta a Didacta?</label>
-        <input type="text" id="interessi" placeholder="Scrivi qui..." required>
+        <label for="interessi">Cosa ti porta a Didacta ?</label>
+        <input type="text" id="interessi" placeholder="Scrivi..." required>
         
-        <div id="container-invio">
-            <button type="submit" id="btnInvia">VERIFICA VINCITA E INVIA</button>
-            <div id="messaggio-interno"></div>
+        <div id="area-invio">
+            <button type="submit" id="btnInvia">Invia Dati e Verifica Vincita</button>
+        </div>
+
+        <div id="container-esito">
+            <div id="messaggio-testo"></div>
         </div>
     </form>
 
@@ -83,15 +83,19 @@
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         const form = document.getElementById('DidactaFirenze');
+        const areaInvio = document.getElementById('area-invio');
+        const containerEsito = document.getElementById('container-esito');
+        const messaggioTesto = document.getElementById('messaggio-testo');
         const btnInvia = document.getElementById('btnInvia');
-        const msgInterno = document.getElementById('messaggio-interno');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Disabilita bottone per evitare doppi invii
             btnInvia.disabled = true;
             btnInvia.innerText = "Invio in corso...";
 
-            // Logica Instant Win
+            // Logica Instant Win (1 su 10)
             const chance = Math.floor(Math.random() * 10) + 1;
             const haVinto = (chance === 7);
             const esito = haVinto ? "VINTO" : "NON VINTO";
@@ -112,31 +116,31 @@
 
                 if (error) throw error;
 
-                // UI: Sostituisci bottone con esito dentro il form
-                btnInvia.style.display = 'none';
-                msgInterno.style.display = 'block';
-                
+                // Nascondi bottone e mostra esito dentro il form
+                areaInvio.style.display = 'none';
+                containerEsito.style.display = 'block';
+
                 if (haVinto) {
-                    msgInterno.className = "vittoria";
-                    msgInterno.innerHTML = "🎉 HAI VINTO UN GADGET!<br>Mostra questo messaggio allo staff.";
+                    messaggioTesto.className = "vittoria";
+                    messaggioTesto.innerHTML = "🎉 COMPLIMENTI! HAI VINTO!<br>Mostra questo messaggio allo staff.";
                 } else {
-                    msgInterno.className = "sconfitta";
-                    msgInterno.innerHTML = "Dati inviati! Purtroppo non hai vinto.<br>Grazie per aver partecipato!";
+                    messaggioTesto.className = "sconfitta";
+                    messaggioTesto.innerHTML = "Dati inviati! Purtroppo non hai vinto.<br>Grazie per aver partecipato!";
                 }
 
-                // Reset automatico dopo 8 secondi
+                // Reset automatico per il prossimo utente dopo 8 secondi
                 setTimeout(() => {
                     form.reset();
-                    msgInterno.style.display = 'none';
-                    btnInvia.style.display = 'block';
+                    containerEsito.style.display = 'none';
+                    areaInvio.style.display = 'block';
                     btnInvia.disabled = false;
-                    btnInvia.innerText = "VERIFICA VINCITA E INVIA";
+                    btnInvia.innerText = "Invia Dati e Verifica Vincita";
                 }, 8000);
 
             } catch (err) {
                 alert("Errore: " + err.message);
                 btnInvia.disabled = false;
-                btnInvia.innerText = "VERIFICA VINCITA E INVIA";
+                btnInvia.innerText = "Invia Dati e Verifica Vincita";
             }
         });
     </script>
