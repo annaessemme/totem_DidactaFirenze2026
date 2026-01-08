@@ -23,9 +23,29 @@
         <input type="text" id="cognome" placeholder="Cognome" required>
         <input type="email" id="email" placeholder="Indirizzo Email" required>
         <input type="text" id="istituto" placeholder="Istituto di provenienza" required>
-        <input type="text" id="ruolo" placeholder="Che ruolo ricopri?" required>
-        <input type="text" id="ordine_grado" placeholder="In che ordine e grado?" required>
-        <input type="text" id="interessi" placeholder="Interessi a Didacta" required>
+        <label for="ruolo">Che ruolo ricopri ?</label>
+            <select id="ruolo" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; background-color: white;">
+                <option value="" disabled selected>Seleziona il tuo ruolo...</option>
+                <option value="Docente">Docente</option>
+                <option value="Dirigente Scolastico">Dirigente Scolastico</option>
+                <option value="Vicepreside">Vicepreside</option>
+                <option value="Dsga">Dsga</option>
+                <option value="Animatore digitale">Animatore digitale</option>
+                <option value="Tecnico di laboratorio">Tecnico di laboratorio</option>
+                <option value="Ufficio tecnico">Ufficio tecnico</option>
+                <option value="Personale ATA">Personale ATA</option>
+                <option value="Altro">Altro</option>
+            </select>
+        <label for="ordine_grado">Ordine e grado della scuola</label>
+            <select id="ordine_grado" required style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; background-color: white;">
+                <option value="" disabled selected>Seleziona ordine e grado...</option>
+                <option value="Infanzia">Scuola dell'Infanzia</option>
+                <option value="Primaria">Scuola Primaria</option>
+                <option value="Secondaria I grado">Secondaria di I grado</option>
+                <option value="Secondaria II grado">Secondaria di II grado</option>
+                <option value="Università">Università / Formazione superiore</option>
+            </select>
+        <input type="text" id="interessi" placeholder="Cosa ti porta a Didacta ?" required>
         
         <button type="submit" id="btnInvia">Invia Dati</button>
         <p id="messaggio">Dati inviati con successo!</p>
