@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compilazione Dati Totem</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f4f4f4; }
+        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #226e94; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
+        button:hover { background: #226e94; }
+        #messaggio { margin-top: 15px; text-align: center; color: #226e94; display: none; font-weight: bold; }
+        input:focus { outline: none; border-color: #226e94; box-shadow: 0 0 5px rgba(62, 207, 142, 0.3); }
+    </style>
+</head>
+<body>
+
+    <form id="DidactaFirenze">
+        <h2>Didacta Firenze 2026</h2>
+        <input type="text" id="nome" placeholder="Nome" required>
+        <input type="text" id="cognome" placeholder="Cognome" required>
+        <input type="email" id="email" placeholder="Indirizzo Email" required>
+        <input type="text" id="istituto" placeholder="Istituto di provenienza" required>
+        <input type="text" id="ruolo" placeholder="Che ruolo ricopri?" required>
+        <input type="text" id="ordine_grado" placeholder="In che ordine e grado?" required>
+        <input type="text" id="interessi" placeholder="Interessi a Didacta" required>
+        
+        <button type="submit" id="btnInvia">Invia Dati</button>
+        <p id="messaggio">Dati inviati con successo!</p>
+    </form>
+
+    <script>
+        // CONFIGURAZIONE SUPABASE
+        const SUPABASE_URL = 'https://sdfdspmethztfgezdqan.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_uD1PGiDFEmXdp3m3n21Ktw_b7oXouT2'; // Assicurati sia la ANON KEY
+        
+        // Inizializzazione corretta
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        const form = document.getElementById('DidactaFirenze');
+        const messaggio = document.getElementById('messaggio');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            console.log("Tentativo di invio...");
+
+            // Assicurati che i nomi a sinistra corrispondano ESATTAMENTE alle colonne su Supabase
+            const payload = {
+                nome: document.getElementById('nome').value,
+                cognome: document.getElementById('cognome').value,
+                email: document.getElementById('email').value,
+                istituto: document.getElementById('istituto').value,
+                ruolo: document.getElementById('ruolo').value,
+                ordine_grado: document.getElementById('ordine_grado').value,
+                interessi: document.getElementById('interessi').value
+            };
+
+            console.log("Dati che sto per inviare:", payload); // Controlla la console per vedere se sono pieni
+
+            try {
+                const { data, error, status } = await _supabase
+                    .from('DidactaFirenze')
+                    .insert([payload])
+                    .select();
+
+                if (error) {
+                    console.error("Errore Supabase:", error.message);
+                    alert("Errore: " + error.message);
+                } else {
+                    console.log("Dati salvati:", data);
+                    messaggio.style.display = 'block';
+                    form.reset();
+                    setTimeout(() => { messaggio.style.display = 'none'; }, 5000);
+                }
+            } catch (err) {
+                console.error("Errore imprevisto:", err);
+            }
+        });
+    </script>
+</body>
+</html>
