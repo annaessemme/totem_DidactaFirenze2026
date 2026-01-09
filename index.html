@@ -67,6 +67,13 @@
 
         <label for="interessi">Cosa ti porta a Didacta ?</label>
         <input type="text" id="interessi" placeholder="Scrivi..." required>
+
+        <div style="margin: 15px 0; font-size: 0.85em; color: #555; display: flex; align-items: flex-start; gap: 10px;">
+            <input type="checkbox" id="privacy" required style="width: auto; margin: 3px 0 0 0;">
+            <label for="privacy" style="font-weight: normal; margin-top: 0;">
+                Dichiaro di aver letto l' <a href="#" onclick="apriPrivacy(); return false;" style="color: #226e94; text-decoration: underline;">Informativa Privacy</a> e acconsento al trattamento dei dati.
+            </label>
+        </div>
         
         <div id="area-invio">
             <button type="submit" id="btnInvia">Invia Dati e Verifica Vincita</button>
@@ -143,6 +150,34 @@
                 btnInvia.innerText = "Invia Dati e Verifica Vincita";
             }
         });
+        // --- FUNZIONI PER LA PRIVACY ---
+        function apriPrivacy() {
+            document.getElementById('modalPrivacy').style.display = 'flex';
+        }
+        
+        function chiudiPrivacy() {
+            document.getElementById('modalPrivacy').style.display = 'none';
+        }
+        
+        // Chiude la privacy se l'utente clicca fuori dal riquadro bianco
+        window.onclick = function(event) {
+            const modal = document.getElementById('modalPrivacy');
+            if (event.target == modal) {
+                chiudiPrivacy();
+            }
+        }
     </script>
+    <div id="modalPrivacy" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
+    <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:500px; max-height:80vh; overflow-y:auto; position:relative;">
+        <span onclick="chiudiPrivacy()" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
+        <h3 style="color:#226e94;">Informativa Privacy</h3>
+        <p style="font-size:0.9em; line-height:1.4; color:#333;">
+            I dati raccolti (Nome, Cognome, Email, ecc.) saranno trattati esclusivamente per le finalità legate all'evento Didacta 2026 e per l'invio di materiali didattici o informative relative ai servizi presentati. <br><br>
+            Il trattamento avviene in modalità digitale tramite la piattaforma Supabase. I dati non saranno ceduti a terzi. In qualsiasi momento è possibile richiedere la cancellazione dei propri dati scrivendo all'indirizzo email di contatto (anna@essemmemultimedia.it).
+        </p>
+        <button type="button" onclick="chiudiPrivacy()" style="background:#226e94; padding:10px;">Ho capito</button>
+    </div>
+</div>
 </body>
 </html>
+
