@@ -9,22 +9,27 @@
         :root {
             --primary: #226e94;
             --bg: #f4f4f4;
-            /* Palette 6 colori pastello */
-            --clr0: #ffcccb; --clr1: #fff4cc; --clr2: #d1ffd6; 
-            --clr3: #e0ccff; --clr4: #d1e9ff; --clr5: #ffe4e1;
+            /* 6 Colori pieni per i 6 segmenti */
+            --clr0: #ffcccb; /* Rosa - Premio B */
+            --clr1: #fff4cc; /* Giallino - NO */
+            --clr2: #d1ffd6; /* Verde - Premio A */
+            --clr3: #e0ccff; /* Viola - NO */
+            --clr4: #d1e9ff; /* Azzurro - Premio C */
+            --clr5: #ffe4e1; /* Pesca - NO */
         }
 
         body { font-family: sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
+        /* FORM ORIGINALE RIPRISTINATO */
         form { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; box-sizing: border-box; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
         label { font-weight: bold; display: block; color: #333; font-size: 14px; }
         
         button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
         button:disabled { background: #ccc; }
 
-        /* Ruota e Layout Esito */
-        #wheel-wrapper { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; text-align: center; }
+        /* RUOTA E LAYOUT */
+        #wheel-wrapper { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; }
         .wheel-container { position: relative; width: 340px; height: 340px; margin: 40px auto; }
         
         .wheel { 
@@ -33,8 +38,14 @@
             transition: transform 7s cubic-bezier(0.1, 0, 0.1, 1);
             background: conic-gradient(
                 var(--clr0) 0deg 60deg, var(--clr1) 60deg 120deg, 
-                var(--clr2) 120deg 180deg, var(--clr3) 180deg 240deg, 
-                var(--clr4) 240deg 300deg, var(--clr5) 300deg 360deg
+                var(--clr2) 120deg 180deg, var(--clr3) 120deg 180deg, /* Fix colori */
+                var(--clr3) 180deg 240deg, var(--clr4) 240deg 300deg, 
+                var(--clr5) 300deg 360deg
+            );
+            /* Correzione gradiente per 6 spicchi netti */
+            background: conic-gradient(
+                var(--clr0) 0deg 60deg, var(--clr1) 60deg 120deg, var(--clr2) 120deg 180deg, 
+                var(--clr3) 180deg 240deg, var(--clr4) 240deg 300deg, var(--clr5) 300deg 360deg
             );
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
@@ -49,7 +60,8 @@
 
         .indicator { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 55px; color: #e74c3c; z-index: 100; }
 
-        #container-esito { margin-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        /* AREA ESITO CENTRATA */
+        #container-esito { margin-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; }
         .box-messaggio { width: 100%; padding: 20px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; box-sizing: border-box; border: 2px solid; }
         .vittoria { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
         .sconfitta { background: #fff3cd; color: #856404; border-color: #ffeeba; }
@@ -65,43 +77,51 @@
         <img src="logosmallmail.jpg" alt="Logo" style="display: block; width: 160px; margin: 0 auto 15px auto;">
         <h2 style="text-align: center; color: var(--primary); margin-top: 0;">Didacta Firenze 2026</h2>
         
-        <label>Nome</label><input type="text" id="nome" required>
-        <label>Cognome</label><input type="text" id="cognome" required>
-        <label>Email</label><input type="email" id="email" required>
-        <label>Istituto</label><input type="text" id="istituto" required>
+        <label>Nome</label>
+        <input type="text" id="nome" placeholder="Inserisci il tuo nome" required>
+        
+        <label>Cognome</label>
+        <input type="text" id="cognome" placeholder="Inserisci il tuo cognome" required>
+        
+        <label>Indirizzo email</label>
+        <input type="email" id="email" placeholder="esempio@email.com" required>
+        
+        <label>Istituto di provenienza</label>
+        <input type="text" id="istituto" placeholder="Nome dell'istituto" required>
         
         <label>Ruolo</label>
         <select id="ruolo" required>
-            <option value="" disabled selected>Seleziona...</option>
+            <option value="" disabled selected>Seleziona il tuo ruolo...</option>
             <option value="Docente">Docente</option>
             <option value="Dirigente Scolastico">Dirigente Scolastico</option>
             <option value="Vicepreside">Vicepreside</option>
             <option value="Dsga">Dsga</option>
             <option value="Animatore digitale">Animatore digitale</option>
             <option value="Tecnico di laboratorio">Tecnico di laboratorio</option>
+            <option value="Ufficio tecnico">Ufficio tecnico</option>
             <option value="Personale ATA">Personale ATA</option>
             <option value="Altro">Altro</option>
         </select>
 
-        <label>Ordine e grado</label>
+        <label>Ordine e grado della scuola</label>
         <select id="ordine_grado" required>
-            <option value="" disabled selected>Seleziona...</option>
-            <option value="Infanzia">Infanzia</option>
-            <option value="Primaria">Primaria</option>
-            <option value="Secondaria I grado">Secondaria I grado</option>
-            <option value="Secondaria II grado">Secondaria II grado</option>
-            <option value="Università">Università / Formazione</option>
+            <option value="" disabled selected>Seleziona ordine e grado...</option>
+            <option value="Infanzia">Scuola dell'Infanzia</option>
+            <option value="Primaria">Scuola Primaria</option>
+            <option value="Secondaria I grado">Secondaria di I grado</option>
+            <option value="Secondaria II grado">Secondaria di II grado</option>
+            <option value="Università">Università / Formazione superiore</option>
         </select>
 
         <label>Cosa ti porta a Didacta?</label>
-        <input type="text" id="interessi" required>
+        <input type="text" id="interessi" placeholder="I tuoi interessi..." required>
 
-        <div style="margin: 15px 0; font-size: 0.85em; display: flex; gap: 10px;">
-            <input type="checkbox" id="privacy" required>
-            <span>Letta l' <a href="#" onclick="apriPrivacy(); return false;">Informativa Privacy</a> e acconsento.</span>
+        <div style="margin: 15px 0; font-size: 0.85em; display: flex; gap: 10px; align-items: flex-start;">
+            <input type="checkbox" id="privacy" required style="width: auto; margin-top: 3px;">
+            <span>Dichiaro di aver letto l' <a href="#" onclick="apriPrivacy(); return false;" style="color: var(--primary); text-decoration: underline;">Informativa Privacy</a> e acconsento.</span>
         </div>
         
-        <button type="submit" id="btnInvia">Registrati e Gira!</button>
+        <button type="submit" id="btnInvia">Registrati e Gira la Ruota!</button>
     </form>
 
     <div id="wheel-wrapper">
@@ -121,7 +141,7 @@
         </div>
         <div id="container-esito" style="display:none;">
             <div id="messaggio-testo"></div>
-            <button id="btnReset" onclick="location.reload()">Nuova Compilazione</button>
+            <button id="btnReset" onclick="location.reload()">Effettua una nuova registrazione</button>
         </div>
     </div>
 
@@ -187,7 +207,7 @@
                 Il Titolare del trattamento è: Essemme Multimedia srl – Sede Legale ADRIA (RO) VIA LEONARDO DA VINCI 11 CAP 45011 - Indirizzo PEC essemmemultimedia@pec.it - Tel. +39 0426 901719 - R.E.A. 139938 - P.IVA e Cod. Fiscale 01252890296 - www.essemmemultimedia.it nella persona del suo Presidente Consiglio Amministrazione Sivieri Alessio e Vicepresidente Casalicchio Andrea.<br>
                 l nominativi dei Responsabili del trattamento designati possono essere acquisiti contattando il Titolare del trattamento via email e/o telefono ai recapiti sopra indicati.<br><br>
             </p>
-            <button onclick="chiudiPrivacy()">Ho capito</button>
+            <button onclick="chiudiPrivacy()" style="background: var(--primary); color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; cursor: pointer;">Ho capito</button>
         </div>
     </div>
 
@@ -204,21 +224,26 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value.toLowerCase().trim();
+            const emailValue = document.getElementById('email').value.toLowerCase().trim();
             
-            const { data: exist } = await _supabase.from('DidactaFirenze').select('email').eq('email', email);
-            if (exist && exist.length > 0) { alert("Email già registrata!"); return; }
+            // 1. Controllo duplicati
+            const { data: exist } = await _supabase.from('DidactaFirenze').select('email').eq('email', emailValue);
+            if (exist && exist.length > 0) {
+                alert("Questa email è già registrata.");
+                return;
+            }
 
-            // LOGICA SINCRONIZZATA:
-            // 0: Premio B (Rosa), 1: NO (Giallo), 2: Premio A (Verde), 3: NO (Viola), 4: Premio C (Azzurro), 5: NO (Pesca)
+            // 2. Calcolo Esito Sincronizzato
+            // Indici: 0:B, 1:NO, 2:A, 3:NO, 4:C, 5:NO
             const premi = ["PREMIO B", "NON VINTO", "PREMIO A", "NON VINTO", "PREMIO C", "NON VINTO"];
             const index = Math.floor(Math.random() * premi.length);
             const esito = premi[index];
 
+            // 3. Database
             await _supabase.from('DidactaFirenze').insert([{
                 nome: document.getElementById('nome').value,
                 cognome: document.getElementById('cognome').value,
-                email: email,
+                email: emailValue,
                 istituto: document.getElementById('istituto').value,
                 ruolo: document.getElementById('ruolo').value,
                 ordine_grado: document.getElementById('ordine_grado').value,
@@ -226,27 +251,23 @@
                 esito_vincita: esito
             }]);
 
+            // 4. Animazione
             form.style.display = 'none';
             wheelWrapper.style.display = 'flex';
 
-            // Calcolo rotazione: 
-            // 360/6 = 60 gradi per spicchio. 
-            // Per far finire lo spicchio 'index' sotto la freccia (che è a ore 12):
-            const extraDeg = index * 60;
-            const totalRotation = 3600 + extraDeg; // 10 giri + offset
-            
-            setTimeout(() => { 
-                wheel.style.transform = `rotate(-${totalRotation}deg)`; 
-            }, 100);
+            // Rotazione: ogni spicchio è 60°. L'offset index*60 deve essere negativo per girare orario.
+            const totalRotation = 3600 + (index * 60); 
+            setTimeout(() => { wheel.style.transform = `rotate(-${totalRotation}deg)`; }, 100);
 
+            // 5. Risultato
             setTimeout(() => {
                 containerEsito.style.display = 'flex';
                 if (esito !== "NON VINTO") {
                     messaggioTesto.className = "box-messaggio vittoria";
-                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong>`;
+                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong><br>Mostra questo schermo allo staff.`;
                 } else {
                     messaggioTesto.className = "box-messaggio sconfitta";
-                    messaggioTesto.innerHTML = `Grazie per aver partecipato!`;
+                    messaggioTesto.innerHTML = `Grazie per aver partecipato!<br>Purtroppo non hai vinto questa volta.`;
                 }
             }, 7200);
         });
