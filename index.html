@@ -9,36 +9,32 @@
         :root {
             --primary: #226e94;
             --bg: #f4f4f4;
-            /* Palette 6 colori pieni (no bianco) */
-            --clr1: #ffcccb; --clr2: #fff4cc; --clr3: #d1ffd6; 
-            --clr4: #e0ccff; --clr5: #d1e9ff; --clr6: #ffe4e1;
+            /* Palette 6 colori pastello */
+            --clr0: #ffcccb; --clr1: #fff4cc; --clr2: #d1ffd6; 
+            --clr3: #e0ccff; --clr4: #d1e9ff; --clr5: #ffe4e1;
         }
 
-        body { 
-            font-family: sans-serif; background: var(--bg); margin: 0; 
-            display: flex; flex-direction: column; align-items: center; 
-            min-height: 100vh; padding: 20px;
-        }
+        body { font-family: sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; }
         
         form { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 450px; box-sizing: border-box; }
-        input, select { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0 15px 0; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
         label { font-weight: bold; display: block; color: #333; font-size: 14px; }
         
         button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
         button:disabled { background: #ccc; }
 
-        /* Ruota Centrata e Testi Allineati */
+        /* Ruota e Layout Esito */
         #wheel-wrapper { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 500px; text-align: center; }
         .wheel-container { position: relative; width: 340px; height: 340px; margin: 40px auto; }
         
         .wheel { 
             width: 100%; height: 100%; border-radius: 50%; border: 10px solid white;
             position: relative; overflow: hidden; 
-            transition: transform 7s cubic-bezier(0.15, 0, 0.15, 1);
+            transition: transform 7s cubic-bezier(0.1, 0, 0.1, 1);
             background: conic-gradient(
-                var(--clr1) 0deg 60deg, var(--clr2) 60deg 120deg, 
-                var(--clr3) 120deg 180deg, var(--clr4) 180deg 240deg, 
-                var(--clr5) 240deg 300deg, var(--clr6) 300deg 360deg
+                var(--clr0) 0deg 60deg, var(--clr1) 60deg 120deg, 
+                var(--clr2) 120deg 180deg, var(--clr3) 180deg 240deg, 
+                var(--clr4) 240deg 300deg, var(--clr5) 300deg 360deg
             );
             box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
@@ -53,16 +49,14 @@
 
         .indicator { position: absolute; top: -30px; left: 50%; transform: translateX(-50%); font-size: 55px; color: #e74c3c; z-index: 100; }
 
-        /* Esito Centrato */
         #container-esito { margin-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .box-messaggio { width: 100%; padding: 20px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; box-sizing: border-box; }
-        .vittoria { background: #e8f5e9; color: #2e7d32; border: 2px solid #a5d6a7; }
-        .sconfitta { background: #fff3cd; color: #856404; border: 2px solid #ffeeba; }
+        .box-messaggio { width: 100%; padding: 20px; border-radius: 12px; font-weight: bold; margin-bottom: 20px; box-sizing: border-box; border: 2px solid; }
+        .vittoria { background: #e8f5e9; color: #2e7d32; border-color: #a5d6a7; }
+        .sconfitta { background: #fff3cd; color: #856404; border-color: #ffeeba; }
         #btnReset { background: #546e7a; width: auto; min-width: 280px; }
 
-        /* Modale Privacy Integrale */
         #modalPrivacy { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center; }
-        .modal-content { background:white; padding:30px; border-radius:12px; width:90%; max-width:600px; max-height:80vh; overflow-y:auto; position:relative; }
+        .modal-content { background:white; padding:30px; border-radius:12px; width:90%; max-width:600px; max-height:80vh; overflow-y:auto; }
     </style>
 </head>
 <body>
@@ -71,51 +65,43 @@
         <img src="logosmallmail.jpg" alt="Logo" style="display: block; width: 160px; margin: 0 auto 15px auto;">
         <h2 style="text-align: center; color: var(--primary); margin-top: 0;">Didacta Firenze 2026</h2>
         
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Inserisci il nome" required>
+        <label>Nome</label><input type="text" id="nome" required>
+        <label>Cognome</label><input type="text" id="cognome" required>
+        <label>Email</label><input type="email" id="email" required>
+        <label>Istituto</label><input type="text" id="istituto" required>
         
-        <label for="cognome">Cognome</label>
-        <input type="text" id="cognome" placeholder="Inserisci il cognome" required>
-        
-        <label for="email">Indirizzo email</label>
-        <input type="email" id="email" placeholder="email@esempio.com" required>
-        
-        <label for="istituto">Istituto di provenienza</label>
-        <input type="text" id="istituto" placeholder="Nome della scuola" required>
-        
-        <label for="ruolo">Ruolo</label>
+        <label>Ruolo</label>
         <select id="ruolo" required>
-            <option value="" disabled selected>Seleziona il tuo ruolo...</option>
+            <option value="" disabled selected>Seleziona...</option>
             <option value="Docente">Docente</option>
             <option value="Dirigente Scolastico">Dirigente Scolastico</option>
             <option value="Vicepreside">Vicepreside</option>
             <option value="Dsga">Dsga</option>
             <option value="Animatore digitale">Animatore digitale</option>
             <option value="Tecnico di laboratorio">Tecnico di laboratorio</option>
-            <option value="Ufficio tecnico">Ufficio tecnico</option>
             <option value="Personale ATA">Personale ATA</option>
             <option value="Altro">Altro</option>
         </select>
 
-        <label for="ordine_grado">Ordine e grado della scuola</label>
+        <label>Ordine e grado</label>
         <select id="ordine_grado" required>
-            <option value="" disabled selected>Seleziona ordine e grado...</option>
-            <option value="Infanzia">Scuola dell'Infanzia</option>
-            <option value="Primaria">Scuola Primaria</option>
-            <option value="Secondaria I grado">Secondaria di I grado</option>
-            <option value="Secondaria II grado">Secondaria di II grado</option>
-            <option value="Università">Università / Formazione superiore</option>
+            <option value="" disabled selected>Seleziona...</option>
+            <option value="Infanzia">Infanzia</option>
+            <option value="Primaria">Primaria</option>
+            <option value="Secondaria I grado">Secondaria I grado</option>
+            <option value="Secondaria II grado">Secondaria II grado</option>
+            <option value="Università">Università / Formazione</option>
         </select>
 
-        <label for="interessi">Cosa ti porta a Didacta?</label>
-        <input type="text" id="interessi" placeholder="I tuoi interessi..." required>
+        <label>Cosa ti porta a Didacta?</label>
+        <input type="text" id="interessi" required>
 
-        <div style="margin: 15px 0; font-size: 0.85em; display: flex; align-items: flex-start; gap: 10px;">
-            <input type="checkbox" id="privacy" required style="width: auto; margin: 3px 0 0 0;">
-            <label for="privacy" style="font-weight: normal;">Dichiaro di aver letto l' <a href="#" onclick="apriPrivacy(); return false;" style="color: var(--primary); text-decoration: underline;">Informativa Privacy</a> e acconsento al trattamento dei dati.</label>
+        <div style="margin: 15px 0; font-size: 0.85em; display: flex; gap: 10px;">
+            <input type="checkbox" id="privacy" required>
+            <span>Letta l' <a href="#" onclick="apriPrivacy(); return false;">Informativa Privacy</a> e acconsento.</span>
         </div>
         
-        <button type="submit" id="btnInvia">Invia i dati e gira la ruota!</button>
+        <button type="submit" id="btnInvia">Registrati e Gira!</button>
     </form>
 
     <div id="wheel-wrapper">
@@ -133,19 +119,17 @@
                 </div>
             </div>
         </div>
-        
         <div id="container-esito" style="display:none;">
             <div id="messaggio-testo"></div>
-            <button id="btnReset" onclick="location.reload()">Premi qui per un'altra compilazione</button>
+            <button id="btnReset" onclick="location.reload()">Nuova Compilazione</button>
         </div>
     </div>
 
     <div id="modalPrivacy">
         <div class="modal-content">
-            <h3 style="color: var(--primary);">Informativa Privacy Integrale</h3>
-            <div style="font-size: 0.85em; line-height: 1.4; color: #333;">
-                <p style="font-size:0.9em; line-height:1.4; color:#333;">
-                <b>Informativa ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016.</b><br>
+            <h3 style="color:#226e94;">Informativa Privacy</h3>
+            <p style="font-size:0.9em; line-height:1.4; color:#333;">
+               <b>Informativa ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016.</b><br>
                 Il Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016 prevede la tutela delle persone e di altri soggetti rispetto al trattamento dei dati personali.<br>
                 Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Vs. riservatezza e dei Vs. diritti.<br>
                 Al fine di permettere a Essemme Multimedia srl di poter svolgere compiutamente la propria attività, dovranno da Voi essere fornite le informazioni di carattere personale necessarie per poter adempiere al rapporto contrattuale instaurato/da instaurarsi.<br>
@@ -202,8 +186,7 @@
                 <b>11.    Titolare e Responsabile del trattamento</b><br>
                 Il Titolare del trattamento è: Essemme Multimedia srl – Sede Legale ADRIA (RO) VIA LEONARDO DA VINCI 11 CAP 45011 - Indirizzo PEC essemmemultimedia@pec.it - Tel. +39 0426 901719 - R.E.A. 139938 - P.IVA e Cod. Fiscale 01252890296 - www.essemmemultimedia.it nella persona del suo Presidente Consiglio Amministrazione Sivieri Alessio e Vicepresidente Casalicchio Andrea.<br>
                 l nominativi dei Responsabili del trattamento designati possono essere acquisiti contattando il Titolare del trattamento via email e/o telefono ai recapiti sopra indicati.<br><br>
-                </p>
-            </div>
+            </p>
             <button onclick="chiudiPrivacy()">Ho capito</button>
         </div>
     </div>
@@ -221,49 +204,49 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const emailValue = document.getElementById('email').value.toLowerCase().trim();
+            const email = document.getElementById('email').value.toLowerCase().trim();
             
-            // 1. Blocco Email Duplicata
-            const { data: exist } = await _supabase.from('DidactaFirenze').select('email').eq('email', emailValue);
-            if (exist && exist.length > 0) {
-                alert("Attenzione: Questa email è già stata registrata.");
-                return;
-            }
+            const { data: exist } = await _supabase.from('DidactaFirenze').select('email').eq('email', email);
+            if (exist && exist.length > 0) { alert("Email già registrata!"); return; }
 
-            // 2. Calcolo Esito (Mappato sui segmenti ruota)
-            const segmenti = ["PREMIO B", "NON VINTO", "PREMIO A", "NON VINTO", "PREMIO C", "NON VINTO"];
-            const index = Math.floor(Math.random() * segmenti.length);
-            const esito = segmenti[index];
+            // LOGICA SINCRONIZZATA:
+            // 0: Premio B (Rosa), 1: NO (Giallo), 2: Premio A (Verde), 3: NO (Viola), 4: Premio C (Azzurro), 5: NO (Pesca)
+            const premi = ["PREMIO B", "NON VINTO", "PREMIO A", "NON VINTO", "PREMIO C", "NON VINTO"];
+            const index = Math.floor(Math.random() * premi.length);
+            const esito = premi[index];
 
-            // 3. Salvataggio Database (Tutti i campi preservati)
-            const { error } = await _supabase.from('DidactaFirenze').insert([{
+            await _supabase.from('DidactaFirenze').insert([{
                 nome: document.getElementById('nome').value,
                 cognome: document.getElementById('cognome').value,
-                email: emailValue,
+                email: email,
                 istituto: document.getElementById('istituto').value,
                 ruolo: document.getElementById('ruolo').value,
                 ordine_grado: document.getElementById('ordine_grado').value,
                 interessi: document.getElementById('interessi').value,
                 esito_vincita: esito
             }]);
-            if (error) { alert("Errore database: " + error.message); return; }
 
-            // 4. Mostra Ruota e Gira
             form.style.display = 'none';
             wheelWrapper.style.display = 'flex';
 
-            const rotation = 2520 + (index * 60); // 7 giri completi + indice
-            setTimeout(() => { wheel.style.transform = `rotate(-${rotation}deg)`; }, 100);
+            // Calcolo rotazione: 
+            // 360/6 = 60 gradi per spicchio. 
+            // Per far finire lo spicchio 'index' sotto la freccia (che è a ore 12):
+            const extraDeg = index * 60;
+            const totalRotation = 3600 + extraDeg; // 10 giri + offset
+            
+            setTimeout(() => { 
+                wheel.style.transform = `rotate(-${totalRotation}deg)`; 
+            }, 100);
 
-            // 5. Risultato Centrato
             setTimeout(() => {
                 containerEsito.style.display = 'flex';
                 if (esito !== "NON VINTO") {
                     messaggioTesto.className = "box-messaggio vittoria";
-                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong><br>Mostra questo schermo allo staff.`;
+                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong>`;
                 } else {
                     messaggioTesto.className = "box-messaggio sconfitta";
-                    messaggioTesto.innerHTML = `GRAZIE PER AVER PARTECIPATO!<br>Purtroppo non hai vinto. Passa a trovarci allo stand!`;
+                    messaggioTesto.innerHTML = `Grazie per aver partecipato!`;
                 }
             }, 7200);
         });
@@ -273,4 +256,3 @@
     </script>
 </body>
 </html>
-
