@@ -257,7 +257,7 @@
         const containerEsito = document.getElementById('container-esito');
         const messaggioTesto = document.getElementById('messaggio-testo');
 
-        form.addEventListener('submit', async (e) => {
+       form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const emailValue = document.getElementById('email').value.toLowerCase().trim();
             
@@ -266,7 +266,7 @@
                 alert("Questa email è già stata utilizzata per partecipare.");
                 return;
             }
-
+        
             // Esito basato su 6 spicchi (60 gradi ciascuno)
             const premi = [
                 "GADGET A",                                 // index 0
@@ -278,7 +278,7 @@
             ];
             const index = Math.floor(Math.random() * premi.length);
             const esito = premi[index];
-
+        
             // Inserimento Database
             await _supabase.from('DidactaFirenze').insert([{
                 nome: document.getElementById('nome').value,
@@ -290,29 +290,34 @@
                 interessi: document.getElementById('interessi').value,
                 esito_vincita: esito
             }]);
-
+        
             // Transizione Form -> Ruota
             form.style.display = 'none';
             wheelWrapper.style.display = 'flex';
-
-            // Animazione Ruota: rotazione calcolata per fermarsi sullo spicchio giusto
-            // Sottraiamo l'angolo perché giriamo in negativo (senso antiorario)
-            const baseSpins = 3600; // 10 giri completi
-            const targetRotation = baseSpins + (index * 60);
+        
+            // --- LOGICA DI ROTAZIONE CORRETTA ---
+            const baseSpins = 3600; // 10 giri completi per dare enfasi
+            const gradiPerSpicchio = 60; // 360 / 6
+            const offsetCentroSpicchio = 30; // Ci sposta dalla riga al centro del colore
+            const variazioneCasuale = Math.floor(Math.random() * 21) - 10; // +/- 10 gradi per realismo
+            
+            // Calcolo finale: giri base + posizione premio + centratura + random
+            const targetRotation = baseSpins + (index * gradiPerSpicchio) + offsetCentroSpicchio + variazioneCasuale;
             
             setTimeout(() => {
+                // Applichiamo la rotazione negativa per girare nel senso corretto rispetto ai premi
                 wheel.style.transform = `rotate(-${targetRotation}deg)`;
             }, 100);
-
-            // Mostra esito dopo il termine dell'animazione (7 secondi)
+        
+            // Mostra esito dopo il termine dell'animazione (7.5 secondi per sicurezza)
             setTimeout(() => {
                 containerEsito.style.display = 'flex';
                 if (esito !== "NON VINTO") {
                     messaggioTesto.className = "box-messaggio vittoria";
-                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br><span style="font-size: 22px;">Hai vinto: ${esito}</span><br><br><small>Mostra questa schermata allo staff per ritirare il premio.</small>`;
+                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br><span style="font-size: 22px;">Hai vinto: ${esito}</span><br><br><small>Mostra questa schermata allo staff oppure fai uno screenshot e recati allo stand per ritirare il premio.</small>`;
                 } else {
                     messaggioTesto.className = "box-messaggio sconfitta";
-                    messaggioTesto.innerHTML = `Grazie per aver partecipato!<br>Purtroppo oggi non hai vinto.`;
+                    messaggioTesto.innerHTML = `Grazie per aver partecipato!<br>Purtroppo non hai vinto.`;
                 }
             }, 7500);
         });
@@ -322,4 +327,5 @@
     </script>
 </body>
 </html>
+
 
