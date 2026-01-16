@@ -51,21 +51,23 @@
             border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 16px; 
         }
 
-        /* RUOTA (Nascosta all'inizio) */
-        #wheel-wrapper { 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
+        /* Questo centra il wrapper della ruota rispetto alla card */
+        #wheel-wrapper {
+            display: none; /* Diventa flex via JS */
+            flex-direction: column;
+            align-items: center;    /* Centra orizzontalmente */
+            justify-content: center; /* Centra verticalmente */
             width: 100%;
+            margin: 0 auto;
         }
-
-        .wheel-container { 
-            position: relative; 
-            width: 80vw; /* Responsive su mobile */
-            height: 80vw; 
-            max-width: 340px; /* Dimensione fissa su PC/Tablet */
-            max-height: 340px; 
-            margin: 20px auto; 
+        
+        /* Assicura che la card stessa sia centrata nel browser */
+        .main-card {
+            margin: auto; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         
         .wheel { 
@@ -107,7 +109,7 @@
 
     <div class="main-card">
         <form id="DidactaFirenze" autocomplete="off">
-            <img src="logosmallmail.jpg" alt="Logo" style="display: block; width: 150px; margin: 0 auto 15px auto;">
+            <img src="logosmallmail.jpg" alt="Logo Didacta" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto 20px auto; border-radius: 8px;">
             <h2>Didacta 2026</h2>
             
             <label>Nome</label><input type="text" id="nome" required>
@@ -147,21 +149,22 @@
                 <span>Dichiaro di aver letto l' <a href="#" onclick="apriPrivacy(); return false;" style="color: var(--primary); text-decoration: underline;">Informativa Privacy</a> e acconsento.</span>
             </div>
             
-            <button type="submit" id="btnInvia">Registrati e Gira la Ruota!</button>
+            <button type="submit" id="btnInvia">Registrati e gira la ruota!</button>
         </form>
 
         <div id="wheel-wrapper">
+            <img src="logosmallmail.jpg" alt="Logo Didacta" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto 20px auto; border-radius: 8px;">
             <h2 style="color: var(--primary);">Tenta la fortuna!</h2>
             <div class="wheel-container">
                 <div class="indicator">▼</div>
                 <div id="wheel" class="wheel">
                     <div class="wheel-labels">
-                        <div style="transform: rotate(30deg)">PREMIO B</div>
-                        <div style="transform: rotate(90deg)">NO</div>
-                        <div style="transform: rotate(150deg)">PREMIO A</div>
-                        <div style="transform: rotate(210deg)">NO</div>
-                        <div style="transform: rotate(270deg)">PREMIO C</div>
-                        <div style="transform: rotate(330deg)">NO</div>
+                        <div style="transform: rotate(30deg)"></div>
+                        <div style="transform: rotate(90deg)"></div>
+                        <div style="transform: rotate(150deg)"></div>
+                        <div style="transform: rotate(210deg)"></div>
+                        <div style="transform: rotate(270deg)"></div>
+                        <div style="transform: rotate(330deg)"></div>
                     </div>
                 </div>
             </div>
@@ -261,7 +264,7 @@
             }
 
             // Calcolo esito sincronizzato
-            const premi = ["PREMIO B", "NON VINTO", "PREMIO A", "NON VINTO", "PREMIO C", "NON VINTO"];
+            const premi = ["GADGET A", "GADGET B", "GADGET C", "BUONO SCONTO 10% SUI MONITOR PROWISE", "BUONO SCONTO 5% SUL NOSTRO SHOP", "NON VINTO"];
             const index = Math.floor(Math.random() * premi.length);
             const esito = premi[index];
 
@@ -290,7 +293,7 @@
                 containerEsito.style.display = 'flex';
                 if (esito !== "NON VINTO") {
                     messaggioTesto.className = "box-messaggio vittoria";
-                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong><br><small>Mostra questo schermo allo staff.</small>`;
+                    messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong><br><small>Mostra questo schermo allo staff o fai uno screenshot della pagina e recati allo stand per ritirare il premio.</small>`;
                 } else {
                     messaggioTesto.className = "box-messaggio sconfitta";
                     messaggioTesto.innerHTML = `Grazie per aver partecipato!<br>Purtroppo non hai vinto.`;
@@ -303,3 +306,4 @@
     </script>
 </body>
 </html>
+
