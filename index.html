@@ -6,174 +6,253 @@
     <title>Compilazione Dati Totem - Didacta 2026</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: #f4f4f4; }
+        :root {
+            --primary: #226e94;
+            --bg: #f4f4f4;
+            /* Palette Tenue */
+            --clr1: #d1e9ff; /* Premio A */
+            --clr2: #fdfdfd; /* NO */
+            --clr3: #d1ffd6; /* Premio B */
+            --clr4: #fdfdfd; /* NO */
+            --clr5: #ffd1d1; /* Premio C */
+            --clr6: #fdfdfd; /* NO */
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background: var(--bg); color: #333; }
         
-        form { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
-        button { width: 100%; padding: 10px; background: #226e94; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-        button:hover { background: #1a5675; }
+        form { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); width: 100%; max-width: 450px; }
+        label { font-weight: 600; display: block; margin-top: 15px; font-size: 0.9em; }
+        input, select { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; font-size: 1rem; }
+        input:focus, select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(34, 110, 148, 0.1); }
+        
+        button { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #1a5675; transform: translateY(-1px); }
         button:disabled { background: #ccc; cursor: not-allowed; }
-        label { font-weight: bold; display: block; margin-top: 10px; color: #333; }
-        select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; background-color: white; }
 
-        #container-esito { margin-top: 20px; text-align: center; width: 100%; max-width: 400px; }
-        .vittoria { padding: 20px; background: #e8f5e9; color: #2e7d32; border: 2px solid #a5d6a7; border-radius: 8px; font-weight: bold; margin-bottom: 15px; }
-        .sconfitta { padding: 20px; background: #fff3cd; color: #856404; border: 2px solid #ffeeba; border-radius: 8px; font-weight: bold; margin-bottom: 15px; }
-
-        #wheel-wrapper { display: none; text-align: center; margin-top: 20px; }
-        .wheel-container { position: relative; width: 320px; height: 320px; margin: 20px auto; }
-        .wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #226e94; position: relative; overflow: hidden; transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); background: #fff; }
-        .indicator { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); font-size: 40px; color: #e74c3c; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.2)); }
+        /* RUOTA MIGLIORATA */
+        #wheel-wrapper { display: none; text-align: center; margin-top: 20px; width: 100%; max-width: 500px; }
         
-        .segment { position: absolute; width: 50%; height: 50%; background: var(--clr); transform-origin: bottom right; transform: rotate(calc(60deg * var(--i))); clip-path: polygon(0 0, 100% 0, 100% 100%); display: flex; justify-content: center; align-items: center; }
-        .segment span { position: absolute; transform: rotate(45deg); left: 10px; top: 35px; font-size: 11px; font-weight: bold; color: #444; white-space: nowrap; text-transform: uppercase; }
+        .wheel-container { 
+            position: relative; 
+            width: 350px; 
+            height: 350px; 
+            margin: 40px auto;
+            filter: drop-shadow(0 10px 15px rgba(0,0,0,0.15));
+        }
 
-        #btnReset { background: #6c757d; margin-top: 20px; display: none; }
+        /* La ruota vera e propria con gradiente conico */
+        .wheel { 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 50%; 
+            border: 10px solid white;
+            position: relative; 
+            overflow: hidden; 
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1); 
+            background: conic-gradient(
+                var(--clr1) 0deg 60deg, 
+                var(--clr2) 60deg 120deg, 
+                var(--clr3) 120deg 180deg, 
+                var(--clr4) 180deg 240deg, 
+                var(--clr5) 240deg 300deg, 
+                var(--clr6) 300deg 360deg
+            );
+        }
+
+        /* Perno centrale decorativo */
+        .wheel::after {
+            content: "";
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px; height: 50px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 5;
+        }
+
+        /* Posizionamento scritte sui segmenti */
+        .wheel-text {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+        }
+
+        .label {
+            position: absolute;
+            width: 50%;
+            height: 40px;
+            top: 50%;
+            left: 50%;
+            transform-origin: 0% 50%;
+            text-align: right;
+            padding-right: 25px;
+            box-sizing: border-box;
+            font-weight: bold;
+            font-size: 13px;
+            color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .indicator { 
+            position: absolute; 
+            top: -25px; left: 50%; 
+            transform: translateX(-50%); 
+            font-size: 50px; 
+            color: #e74c3c; 
+            z-index: 20;
+        }
+
+        /* ESITO */
+        #container-esito { margin-top: 30px; display: none; }
+        .vittoria { padding: 25px; background: #e8f5e9; color: #2e7d32; border: 2px solid #a5d6a7; border-radius: 12px; font-weight: bold; }
+        .sconfitta { padding: 25px; background: #fff8e1; color: #856404; border: 2px solid #ffeeba; border-radius: 12px; font-weight: bold; }
+        #btnReset { background: #6c757d; margin-top: 20px; }
+
+        /* PRIVACY */
+        #modalPrivacy { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center; }
+        .modal-content { background:white; padding:30px; border-radius:12px; width:90%; max-width:650px; max-height:80vh; overflow-y:auto; position:relative; }
     </style>
 </head>
 <body>
 
     <form id="DidactaFirenze" autocomplete="off">
-        <img src="logosmallmail.jpg" alt="Logo Didacta" style="display: block; width: 100%; max-width: 100%; height: auto; margin: 0 auto 20px auto; border-radius: 8px;">
-        <h2 style="text-align: center; color: #226e94;">Didacta Firenze 2026</h2>
+        <img src="logosmallmail.jpg" alt="Logo" style="display: block; width: 100%; max-width: 180px; margin: 0 auto 20px auto;">
+        <h2 style="text-align: center; color: var(--primary); margin-bottom: 25px;">Didacta Firenze 2026</h2>
         
-        <label for="nome">Nome</label>
-        <input type="text" id="nome" placeholder="Nome" required>
+        <label>Nome</label>
+        <input type="text" id="nome" required>
         
-        <label for="cognome">Cognome</label>
-        <input type="text" id="cognome" placeholder="Cognome" required>
+        <label>Cognome</label>
+        <input type="text" id="cognome" required>
         
-        <label for="email">Indirizzo email</label>
-        <input type="email" id="email" placeholder="Indirizzo Email" required>
+        <label>Indirizzo email</label>
+        <input type="email" id="email" required>
         
-        <label for="istituto">Istituto di provenienza</label>
-        <input type="text" id="istituto" placeholder="Istituto di provenienza" required>
+        <label>Istituto di provenienza</label>
+        <input type="text" id="istituto" required>
         
-        <label for="ruolo">Ruolo</label>
+        <label>Ruolo</label>
         <select id="ruolo" required>
-            <option value="" disabled selected>Seleziona il tuo ruolo...</option>
+            <option value="" disabled selected>Seleziona...</option>
             <option value="Docente">Docente</option>
             <option value="Dirigente Scolastico">Dirigente Scolastico</option>
-            <option value="Vicepreside">Vicepreside</option>
-            <option value="Dsga">Dsga</option>
             <option value="Animatore digitale">Animatore digitale</option>
-            <option value="Tecnico di laboratorio">Tecnico di laboratorio</option>
-            <option value="Ufficio tecnico">Ufficio tecnico</option>
             <option value="Personale ATA">Personale ATA</option>
             <option value="Altro">Altro</option>
         </select>
 
-        <label for="ordine_grado">Ordine e grado della scuola</label>
+        <label>Ordine e grado</label>
         <select id="ordine_grado" required>
-            <option value="" disabled selected>Seleziona ordine e grado...</option>
+            <option value="" disabled selected>Seleziona...</option>
             <option value="Infanzia">Scuola dell'Infanzia</option>
             <option value="Primaria">Scuola Primaria</option>
             <option value="Secondaria I grado">Secondaria di I grado</option>
             <option value="Secondaria II grado">Secondaria di II grado</option>
-            <option value="Università">Università / Formazione superiore</option>
+            <option value="Università">Università</option>
         </select>
 
-        <label for="interessi">Cosa ti porta a Didacta?</label>
-        <input type="text" id="interessi" placeholder="Scrivi..." required>
+        <label>Cosa ti porta a Didacta?</label>
+        <input type="text" id="interessi" required>
 
-        <div style="margin: 15px 0; font-size: 0.85em; color: #555; display: flex; align-items: flex-start; gap: 10px;">
-            <input type="checkbox" id="privacy" required style="width: auto; margin: 3px 0 0 0;">
-            <label for="privacy" style="font-weight: normal; margin-top: 0;">
-                Dichiaro di aver letto l' <a href="#" onclick="apriPrivacy(); return false;" style="color: #226e94; text-decoration: underline;">Informativa Privacy</a> e acconsento al trattamento dei dati.
-            </label>
+        <div style="margin: 20px 0; font-size: 0.85em; display: flex; gap: 10px;">
+            <input type="checkbox" id="privacy" required style="width: auto; margin: 0;">
+            <span>Dichiaro di aver letto l' <a href="#" onclick="apriPrivacy(); return false;" style="color: var(--primary);">Informativa Privacy</a>.</span>
         </div>
         
-        <div id="area-invio">
-            <button type="submit" id="btnInvia">Invia i dati e gira la ruota!</button>
-        </div>
+        <button type="submit" id="btnInvia">Registrati e Gira la Ruota!</button>
     </form>
 
     <div id="wheel-wrapper">
-        <h2 style="color: #226e94;">Buona Fortuna!</h2>
+        <h2 style="color: var(--primary);">Tenta la fortuna!</h2>
         <div class="wheel-container">
             <div class="indicator">▼</div>
             <div id="wheel" class="wheel">
-                <div class="segment" style="--i:1; --clr:#d1e9ff;"><span>PREMIO A</span></div>
-                <div class="segment" style="--i:2; --clr:#f9f9f9;"><span>NO</span></div>
-                <div class="segment" style="--i:3; --clr:#d1ffd6;"><span>PREMIO B</span></div>
-                <div class="segment" style="--i:4; --clr:#f9f9f9;"><span>NO</span></div>
-                <div class="segment" style="--i:5; --clr:#ffd1d1;"><span>PREMIO C</span></div>
-                <div class="segment" style="--i:6; --clr:#f9f9f9;"><span>NO</span></div>
+                <div class="wheel-text">
+                    <div class="label" style="transform: rotate(-30deg)">PREMIO A</div>
+                    <div class="label" style="transform: rotate(-90deg)">NO</div>
+                    <div class="label" style="transform: rotate(-150deg)">PREMIO B</div>
+                    <div class="label" style="transform: rotate(-210deg)">NO</div>
+                    <div class="label" style="transform: rotate(-270deg)">PREMIO C</div>
+                    <div class="label" style="transform: rotate(-330deg)">NO</div>
+                </div>
             </div>
         </div>
         
-        <div id="container-esito" style="display:none;">
+        <div id="container-esito">
             <div id="messaggio-testo"></div>
             <button id="btnReset" onclick="location.reload()">Premi qui per effettuare un'altra compilazione</button>
         </div>
     </div>
 
-    <div id="modalPrivacy" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:20px; border-radius:8px; width:90%; max-width:600px; max-height:80vh; overflow-y:auto; position:relative;">
-            <span onclick="chiudiPrivacy()" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer;">&times;</span>
-            <h3 style="color:#226e94;">Informativa Privacy</h3>
-            <div style="font-size:0.85em; line-height:1.4; color:#333;">
+    <div id="modalPrivacy">
+        <div class="modal-content">
+            <h3 style="color: var(--primary);">Informativa Privacy</h3>
+            <div style="font-size: 0.85em; line-height: 1.5;">
                 <p style="font-size:0.9em; line-height:1.4; color:#333;">
-                   <b>Informativa ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016.</b><br>
-                    Il Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016 prevede la tutela delle persone e di altri soggetti rispetto al trattamento dei dati personali.<br>
-                    Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Vs. riservatezza e dei Vs. diritti.<br>
-                    Al fine di permettere a Essemme Multimedia srl di poter svolgere compiutamente la propria attività, dovranno da Voi essere fornite le informazioni di carattere personale necessarie per poter adempiere al rapporto contrattuale instaurato/da instaurarsi.<br>
-                    Ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016, pertanto, in merito al trattamento dei Vs. dati che verrà da noi eseguito, ci pregiamo di fornirvi le seguenti informazioni:<br><br>
-                    <b>01.    Finalità del trattamento</b><br>
-                    I Vs. dati personali, da Voi liberamente forniti e da noi acquisiti saranno trattati in modo lecito e secondo correttezza per la erogazione dei servizi e la fornitura dei prodotti che la ns. Società offre ai propri Clienti.<br>
-                    Tali dati verranno trattati in applicazione dei principi sanciti dall’art. 5 Regolamento 679/16, e quindi, principio di liceità, correttezza, trasparenza, limitazione delle finalità, minimizzazione dei dati, esattezza, limitazione della conservazione, integrità, riservatezza e responsabilizzazione.<br>
-                    I Vs. dati verranno trattati per finalità connesse alla gestione degli ordinari rapporti contrattuali e commerciali e, precisamente per:<br>
-                    - l’iscrizione al corso scelto;<br>
-                    - la pianificazione del corso;<br>
-                    - l’erogazione del corso;<br>
-                    - gli aggiornamenti post-corso;<br>
-                    - la registrazione documentale del corso;<br>
-                    - la tenuta della contabilità;<br>
-                    - la fatturazione,<br>
-                    nonché per la soddisfazione di tutti gli obblighi previsti dalle normative vigenti.<br><br>
-                    <b>02.    Modalità del trattamento</b><br>
-                    I dati verranno trattati principalmente con strumenti manuali, elettronici, informatici e telematici con logiche strettamente correlate alle finalità sopra indicate e verranno memorizzati sia su supporti informatici sia su supporti cartacei sia su ogni altro tipo di supporto idoneo, nel rispetto delle misure di sicurezza previste dal Regolamento (UE) 2016/679 del parlamento europeo e del Consiglio del 27 aprile 2016.<br><br>
-                    <b>03.    Natura obbligatoria o facoltativa del conferimento dei dati e conseguenze di un eventuale rifiuto a rispondere</b><br>
-                    Ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016, facciamo presente, inoltre, che l’eventuale rifiuto di fornire i dati, al momento della raccolta delle informazioni, potrebbe comportare l’oggettiva impossibilità della nostra Società di osservare parzialmente o in toto gli obblighi di legge e/o di contratto connessi alle obbligazioni contrattuali da instaurarsi/in essere e che pertanto il rapporto potrebbe non essere validamente instaurato e/o proseguito.<br><br>
-                    <b>04.   Comunicazione dei dati a terzi</b>
-                    <b>04.   Comunicazione dei dati a terzi</b><br>
-                    a) I Vs. dati potranno essere conosciuti e trattati dal Titolare del trattamento, dai Responsabili del trattamento eventualmente designati oltre che dagli Incaricati del trattamento interni appositamente designati, che saranno comunque tenuti al segreto professionale ed alla massima riservatezza sugli stessi.<br> 
-                    b) I Vs. dati, potranno essere comunicati a terzi, esclusivamente per esigenze tecniche ed operative strettamente collegate alle finalità sopra enunciate ed in particolare alle seguenti categorie di soggetti:<br>
-                    - da/a Enti, Professionisti, Società o altre Strutture da noi incaricate dei trattamenti connessi all’adempimento degli obblighi amministrativi, contabili e gestionali legati all’ordinario svolgimento della nostra attività economica, anche per finalità di recupero credito;<br>
-                    - da/a Società, Enti o Consorzi, Professionisti che forniscano alla nostra Società consulenze e/o servizi elaborativi o che svolgano attività strumentali a quella della nostra Società ed in particolare da nostri legali e consulenti in genere;<br>
-                    - da/a Pubbliche Autorità ed Amministrazioni per le finalità connesse all’adempimento di obblighi legali;<br>
-                    - da/a Enti Previdenziali pubblici e privati ai quali il trasferimento dei Vs. dati risulti necessario allo svolgimento dell’attività della nostra Azienda in relazione all’assolvimento, da parte nostra, delle obbligazioni contrattuali/commerciali nei Vs. confronti;<br>
-                    - da/a Banche, Istituti finanziari o altri soggetti ai quali il trasferimento dei Vs. dati risulti necessario allo svolgimento dell’attività della nostra Azienda in relazione all’assolvimento, da parte nostra, delle obbligazioni contrattuali/commerciali nei Vs. confronti.<br>
-                    - da/a Soggetti ai quali la facoltà di accedere ai dati personali sia riconosciuta da disposizione di legge o di normativa secondaria o comunitaria, nonché da specifici contratti ed accordi debitamente sottoscritti;<br>
-                    - da/a Soggetti ai quali la comunicazione dei dati personali sia necessaria o sia comunque funzionale all’espletamento delle obbligazioni contrattuali in essere.<br><br>
-                    <b>5.    Diffusione dei dati</b><br>
-                    I dati personali non sono soggetti a diffusione.<br><br>
-                    <b>6.    Trasferimenti dei dati a Paesi terzi</b><br>
-                    I Vs. dati, qualora necessario, potranno eventualmente essere esportati, ai sensi della normativa vigente, verso Paesi appartenenti alla Unione Europea, qualora il trasferimento si renda necessario per l'esecuzione di obblighi derivanti dai rapporti in essere.<br>
-                    Inoltre, qualora necessario, i Vs. dati potranno eventualmente essere esportati, ai sensi della normativa vigente, a un paese terzo. In tal caso il paese terzo sarà comunque un paese per il quale esista una decisione di adeguatezza della Commissione.<br><br>
-                    <b>7.    Durata della conservazione dei dati</b><br>
-                    I Vs. dati verranno trattati per tutta la durata del rapporto contrattuale e comunque fino all’estinzione della procedura nell’ambito della quale sono stati acquisiti e saranno comunque conservati per un quinquennio (anni 5) dall’ultimo trattamento per finalità connesse o strumentali all’attività svolta da Essemme Multimedia srl, ed in particolare per motivi contabili, ovvero per un decennio (anni 10) per necessità di prova e documentazione a fini fiscali/tributari, escluso ogni possibile utilizzo per ragioni personali e ogni possibile utilizzo in conflitto con il Cliente, e fatta salva qualsivoglia altra disposizione di legge applicabile.<br><br>
-                    <b>8.    Diritto di accesso ai dati personali ed altri diritti [Artt. 15 – 22 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016]</b><br>
-                    L’interessato ha diritto di ottenere la conferma dell’esistenza o meno di dati personali che lo riguardano, anche se non ancora registrati, e la loro comunicazione in forma intelligibile.<br>
-                    L’interessato ha diritto di ottenere l’indicazione: dell’origine dei dati personali, delle finalità e modalità del trattamento; della logica applicata in caso di trattamento effettuato con l’ausilio di strumenti elettronici; degli estremi identificativi del titolare del trattamento, del responsabile e del rappresentante eventualmente designati; dei soggetti o delle categorie di soggetti ai quali i dati personali possano essere comunicati o che possono venirne a conoscenza in qualità di rappresentante designato nel territorio dello Stato, di responsabili o incaricati.<br>
-                    L’interessato ha diritto di ottenere: l’aggiornamento; la rettifica, ovvero, quando vi è interesse, l’integrazione dei dati, la cancellazione, la trasformazione in forma anonima o il blocco dei dati trattati in violazione di legge, compresi quelli di cui non sia necessaria la conservazione in relazione agli scopi per i quali i dati siano stati raccolti o successivamente trattati; l’attestazione che le operazioni richieste siano state portate a conoscenza, anche per quanto riguarda il loro contenuto, di coloro ai quali i dati siano stati comunicati o diffusi, eccettuato il caso in cui tale adempimento si riveli impossibile o comporti un impiego di mezzi manifestamente sproporzionato rispetto al diritto tutelato.<br>
-                    L’interessato ha diritto di opporsi in tutto o in parte, per motivi legittimi: al trattamento dei dati personali che lo riguardano, ancorché pertinenti allo scopo della raccolta; al trattamento dei dati personali che lo riguardano a fini di invio di materiale pubblicitario o di vendita diretta o per il compimento di ricerche di mercato o di comunicazione commerciale.<br><br>
-                    <b>9.    Informativa, eventuale consenso, modifica o revoca dei consensi e loro effetti</b><br>
-                    In caso di conclusione di più negozi giuridici la presente informativa e la eventuale prestazione del consenso si considerano validi anche per i negozi giuridici successivi.<br>
-                    È sempre possibile per l’interessato, in qualsiasi momento, modificare o revocare con le medesime modalità con le quali è stato rilasciato l’eventuale consenso e/o i consensi una volta manifestato/i.<br>
-                    La revoca del consenso e/o dei consensi non pregiudica la liceità del trattamento basata sul/sui consenso/i prima della revoca.<br><br>
-                    <b>10.    Possibilità di segnalazione e/o reclamo presso il Garante per la protezione dei dati personali</b><br>
-                    Qualora ritenga che vi sia stata una violazione della disciplina in materia di protezione dei dati personali l’interessato ha in qualsiasi momento la possibilità di proporre segnalazione e/o reclamo al Garante per la protezione dei dati personali utilizzando tra le seguenti modalità quella che ritenga più opportuna:<br>
-                    a) raccomandata A/R indirizzata a Garante per la protezione dei dati personali, Piazza di Monte Citorio, 121 00186 Roma;<br>
-                    b) e-mail all'indirizzo: urp@gpdp.it, oppure urp@pec.gpdp.it;<br>
-                    c) fax al numero: 06/69677.3785.<br>
-                    Per i dettagli delle modalità di inoltro della segnalazione e/o reclamo e del pagamento dei relativi diritti di segreteria l’interessato deve consultare il sito www.garanteprivacy.it<br><br>
-                    <b>11.    Titolare e Responsabile del trattamento</b><br>
-                    Il Titolare del trattamento è: Essemme Multimedia srl – Sede Legale ADRIA (RO) VIA LEONARDO DA VINCI 11 CAP 45011 - Indirizzo PEC essemmemultimedia@pec.it - Tel. +39 0426 901719 - R.E.A. 139938 - P.IVA e Cod. Fiscale 01252890296 - www.essemmemultimedia.it nella persona del suo Presidente Consiglio Amministrazione Sivieri Alessio e Vicepresidente Casalicchio Andrea.<br>
-                    l nominativi dei Responsabili del trattamento designati possono essere acquisiti contattando il Titolare del trattamento via email e/o telefono ai recapiti sopra indicati.<br><br>
+               <b>Informativa ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016.</b><br>
+                Il Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016 prevede la tutela delle persone e di altri soggetti rispetto al trattamento dei dati personali.<br>
+                Secondo la normativa indicata, tale trattamento sarà improntato ai principi di correttezza, liceità e trasparenza e di tutela della Vs. riservatezza e dei Vs. diritti.<br>
+                Al fine di permettere a Essemme Multimedia srl di poter svolgere compiutamente la propria attività, dovranno da Voi essere fornite le informazioni di carattere personale necessarie per poter adempiere al rapporto contrattuale instaurato/da instaurarsi.<br>
+                Ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016, pertanto, in merito al trattamento dei Vs. dati che verrà da noi eseguito, ci pregiamo di fornirvi le seguenti informazioni:<br><br>
+                <b>01.    Finalità del trattamento</b><br>
+                I Vs. dati personali, da Voi liberamente forniti e da noi acquisiti saranno trattati in modo lecito e secondo correttezza per la erogazione dei servizi e la fornitura dei prodotti che la ns. Società offre ai propri Clienti.<br>
+                Tali dati verranno trattati in applicazione dei principi sanciti dall’art. 5 Regolamento 679/16, e quindi, principio di liceità, correttezza, trasparenza, limitazione delle finalità, minimizzazione dei dati, esattezza, limitazione della conservazione, integrità, riservatezza e responsabilizzazione.<br>
+                I Vs. dati verranno trattati per finalità connesse alla gestione degli ordinari rapporti contrattuali e commerciali e, precisamente per:<br>
+                - l’iscrizione al corso scelto;<br>
+                - la pianificazione del corso;<br>
+                - l’erogazione del corso;<br>
+                - gli aggiornamenti post-corso;<br>
+                - la registrazione documentale del corso;<br>
+                - la tenuta della contabilità;<br>
+                - la fatturazione,<br>
+                nonché per la soddisfazione di tutti gli obblighi previsti dalle normative vigenti.<br><br>
+                <b>02.    Modalità del trattamento</b><br>
+                I dati verranno trattati principalmente con strumenti manuali, elettronici, informatici e telematici con logiche strettamente correlate alle finalità sopra indicate e verranno memorizzati sia su supporti informatici sia su supporti cartacei sia su ogni altro tipo di supporto idoneo, nel rispetto delle misure di sicurezza previste dal Regolamento (UE) 2016/679 del parlamento europeo e del Consiglio del 27 aprile 2016.<br><br>
+                <b>03.    Natura obbligatoria o facoltativa del conferimento dei dati e conseguenze di un eventuale rifiuto a rispondere</b><br>
+                Ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016, facciamo presente, inoltre, che l’eventuale rifiuto di fornire i dati, al momento della raccolta delle informazioni, potrebbe comportare l’oggettiva impossibilità della nostra Società di osservare parzialmente o in toto gli obblighi di legge e/o di contratto connessi alle obbligazioni contrattuali da instaurarsi/in essere e che pertanto il rapporto potrebbe non essere validamente instaurato e/o proseguito.<br><br>
+                <b>04.   Comunicazione dei dati a terzi</b>
+                <b>04.   Comunicazione dei dati a terzi</b><br>
+                a) I Vs. dati potranno essere conosciuti e trattati dal Titolare del trattamento, dai Responsabili del trattamento eventualmente designati oltre che dagli Incaricati del trattamento interni appositamente designati, che saranno comunque tenuti al segreto professionale ed alla massima riservatezza sugli stessi.<br> 
+                b) I Vs. dati, potranno essere comunicati a terzi, esclusivamente per esigenze tecniche ed operative strettamente collegate alle finalità sopra enunciate ed in particolare alle seguenti categorie di soggetti:<br>
+                - da/a Enti, Professionisti, Società o altre Strutture da noi incaricate dei trattamenti connessi all’adempimento degli obblighi amministrativi, contabili e gestionali legati all’ordinario svolgimento della nostra attività economica, anche per finalità di recupero credito;<br>
+                - da/a Società, Enti o Consorzi, Professionisti che forniscano alla nostra Società consulenze e/o servizi elaborativi o che svolgano attività strumentali a quella della nostra Società ed in particolare da nostri legali e consulenti in genere;<br>
+                - da/a Pubbliche Autorità ed Amministrazioni per le finalità connesse all’adempimento di obblighi legali;<br>
+                - da/a Enti Previdenziali pubblici e privati ai quali il trasferimento dei Vs. dati risulti necessario allo svolgimento dell’attività della nostra Azienda in relazione all’assolvimento, da parte nostra, delle obbligazioni contrattuali/commerciali nei Vs. confronti;<br>
+                - da/a Banche, Istituti finanziari o altri soggetti ai quali il trasferimento dei Vs. dati risulti necessario allo svolgimento dell’attività della nostra Azienda in relazione all’assolvimento, da parte nostra, delle obbligazioni contrattuali/commerciali nei Vs. confronti.<br>
+                - da/a Soggetti ai quali la facoltà di accedere ai dati personali sia riconosciuta da disposizione di legge o di normativa secondaria o comunitaria, nonché da specifici contratti ed accordi debitamente sottoscritti;<br>
+                - da/a Soggetti ai quali la comunicazione dei dati personali sia necessaria o sia comunque funzionale all’espletamento delle obbligazioni contrattuali in essere.<br><br>
+                <b>5.    Diffusione dei dati</b><br>
+                I dati personali non sono soggetti a diffusione.<br><br>
+                <b>6.    Trasferimenti dei dati a Paesi terzi</b><br>
+                I Vs. dati, qualora necessario, potranno eventualmente essere esportati, ai sensi della normativa vigente, verso Paesi appartenenti alla Unione Europea, qualora il trasferimento si renda necessario per l'esecuzione di obblighi derivanti dai rapporti in essere.<br>
+                Inoltre, qualora necessario, i Vs. dati potranno eventualmente essere esportati, ai sensi della normativa vigente, a un paese terzo. In tal caso il paese terzo sarà comunque un paese per il quale esista una decisione di adeguatezza della Commissione.<br><br>
+                <b>7.    Durata della conservazione dei dati</b><br>
+                I Vs. dati verranno trattati per tutta la durata del rapporto contrattuale e comunque fino all’estinzione della procedura nell’ambito della quale sono stati acquisiti e saranno comunque conservati per un quinquennio (anni 5) dall’ultimo trattamento per finalità connesse o strumentali all’attività svolta da Essemme Multimedia srl, ed in particolare per motivi contabili, ovvero per un decennio (anni 10) per necessità di prova e documentazione a fini fiscali/tributari, escluso ogni possibile utilizzo per ragioni personali e ogni possibile utilizzo in conflitto con il Cliente, e fatta salva qualsivoglia altra disposizione di legge applicabile.<br><br>
+                <b>8.    Diritto di accesso ai dati personali ed altri diritti [Artt. 15 – 22 del Regolamento (UE) 2016/679 del Parlamento europeo e del Consiglio del 27 aprile 2016]</b><br>
+                L’interessato ha diritto di ottenere la conferma dell’esistenza o meno di dati personali che lo riguardano, anche se non ancora registrati, e la loro comunicazione in forma intelligibile.<br>
+                L’interessato ha diritto di ottenere l’indicazione: dell’origine dei dati personali, delle finalità e modalità del trattamento; della logica applicata in caso di trattamento effettuato con l’ausilio di strumenti elettronici; degli estremi identificativi del titolare del trattamento, del responsabile e del rappresentante eventualmente designati; dei soggetti o delle categorie di soggetti ai quali i dati personali possano essere comunicati o che possono venirne a conoscenza in qualità di rappresentante designato nel territorio dello Stato, di responsabili o incaricati.<br>
+                L’interessato ha diritto di ottenere: l’aggiornamento; la rettifica, ovvero, quando vi è interesse, l’integrazione dei dati, la cancellazione, la trasformazione in forma anonima o il blocco dei dati trattati in violazione di legge, compresi quelli di cui non sia necessaria la conservazione in relazione agli scopi per i quali i dati siano stati raccolti o successivamente trattati; l’attestazione che le operazioni richieste siano state portate a conoscenza, anche per quanto riguarda il loro contenuto, di coloro ai quali i dati siano stati comunicati o diffusi, eccettuato il caso in cui tale adempimento si riveli impossibile o comporti un impiego di mezzi manifestamente sproporzionato rispetto al diritto tutelato.<br>
+                L’interessato ha diritto di opporsi in tutto o in parte, per motivi legittimi: al trattamento dei dati personali che lo riguardano, ancorché pertinenti allo scopo della raccolta; al trattamento dei dati personali che lo riguardano a fini di invio di materiale pubblicitario o di vendita diretta o per il compimento di ricerche di mercato o di comunicazione commerciale.<br><br>
+                <b>9.    Informativa, eventuale consenso, modifica o revoca dei consensi e loro effetti</b><br>
+                In caso di conclusione di più negozi giuridici la presente informativa e la eventuale prestazione del consenso si considerano validi anche per i negozi giuridici successivi.<br>
+                È sempre possibile per l’interessato, in qualsiasi momento, modificare o revocare con le medesime modalità con le quali è stato rilasciato l’eventuale consenso e/o i consensi una volta manifestato/i.<br>
+                La revoca del consenso e/o dei consensi non pregiudica la liceità del trattamento basata sul/sui consenso/i prima della revoca.<br><br>
+                <b>10.    Possibilità di segnalazione e/o reclamo presso il Garante per la protezione dei dati personali</b><br>
+                Qualora ritenga che vi sia stata una violazione della disciplina in materia di protezione dei dati personali l’interessato ha in qualsiasi momento la possibilità di proporre segnalazione e/o reclamo al Garante per la protezione dei dati personali utilizzando tra le seguenti modalità quella che ritenga più opportuna:<br>
+                a) raccomandata A/R indirizzata a Garante per la protezione dei dati personali, Piazza di Monte Citorio, 121 00186 Roma;<br>
+                b) e-mail all'indirizzo: urp@gpdp.it, oppure urp@pec.gpdp.it;<br>
+                c) fax al numero: 06/69677.3785.<br>
+                Per i dettagli delle modalità di inoltro della segnalazione e/o reclamo e del pagamento dei relativi diritti di segreteria l’interessato deve consultare il sito www.garanteprivacy.it<br><br>
+                <b>11.    Titolare e Responsabile del trattamento</b><br>
+                Il Titolare del trattamento è: Essemme Multimedia srl – Sede Legale ADRIA (RO) VIA LEONARDO DA VINCI 11 CAP 45011 - Indirizzo PEC essemmemultimedia@pec.it - Tel. +39 0426 901719 - R.E.A. 139938 - P.IVA e Cod. Fiscale 01252890296 - www.essemmemultimedia.it nella persona del suo Presidente Consiglio Amministrazione Sivieri Alessio e Vicepresidente Casalicchio Andrea.<br>
+                l nominativi dei Responsabili del trattamento designati possono essere acquisiti contattando il Titolare del trattamento via email e/o telefono ai recapiti sopra indicati.<br><br>
                 </p>
             </div>
-            <button type="button" onclick="chiudiPrivacy()" style="background:#226e94; padding:12px; color:white; border:none; border-radius:4px; width:100%; margin-top:15px; font-weight:bold;">Ho capito</button>
+            <button type="button" onclick="chiudiPrivacy()">Ho capito</button>
         </div>
     </div>
 
@@ -188,75 +267,65 @@
         const wheel = document.getElementById('wheel');
         const containerEsito = document.getElementById('container-esito');
         const messaggioTesto = document.getElementById('messaggio-testo');
-        const btnReset = document.getElementById('btnReset');
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const email = document.getElementById('email').value.toLowerCase().trim();
             
-            const emailValue = document.getElementById('email').value.toLowerCase().trim();
             btnInvia.disabled = true;
-            btnInvia.innerText = "Verifica in corso...";
+            btnInvia.innerText = "Controllo in corso...";
 
             try {
-                // 1. Controllo se l'email esiste già
-                const { data: existing, error: checkError } = await _supabase
-                    .from('DidactaFirenze')
-                    .select('email')
-                    .eq('email', emailValue);
-
-                if (checkError) throw checkError;
-
-                if (existing && existing.length > 0) {
-                    alert("Questa email è già stata utilizzata. Non è possibile partecipare due volte.");
+                // Controllo Email Duplicata
+                const { data: exist } = await _supabase.from('DidactaFirenze').select('email').eq('email', email);
+                if (exist && exist.length > 0) {
+                    alert("Spiacenti! Questa email è già stata registrata per questo gioco.");
                     btnInvia.disabled = false;
-                    btnInvia.innerText = "Invia i dati e gira la ruota!";
+                    btnInvia.innerText = "Registrati e Gira la Ruota!";
                     return;
                 }
 
-                // 2. Calcolo risultato
-                const segmenti = ["PREMIO A", "NON VINTO", "PREMIO B", "NON VINTO", "PREMIO C", "NON VINTO"];
-                const indice = Math.floor(Math.random() * segmenti.length);
-                const esito = segmenti[indice];
+                // Logica Premio
+                const opzioni = ["PREMIO A", "NON VINTO", "PREMIO B", "NON VINTO", "PREMIO C", "NON VINTO"];
+                const index = Math.floor(Math.random() * opzioni.length);
+                const vinto = opzioni[index];
 
-                // 3. Salvataggio dati
-                const payload = {
+                // Salvataggio
+                const { error } = await _supabase.from('DidactaFirenze').insert([{
                     nome: document.getElementById('nome').value,
                     cognome: document.getElementById('cognome').value,
-                    email: emailValue,
+                    email: email,
                     istituto: document.getElementById('istituto').value,
                     ruolo: document.getElementById('ruolo').value,
                     ordine_grado: document.getElementById('ordine_grado').value,
                     interessi: document.getElementById('interessi').value,
-                    esito_vincita: esito
-                };
+                    esito_vincita: vinto
+                }]);
+                if (error) throw error;
 
-                const { error: insertError } = await _supabase.from('DidactaFirenze').insert([payload]);
-                if (insertError) throw insertError;
-
-                // 4. Mostra Ruota
+                // Transizione UI
                 form.style.display = 'none';
                 wheelWrapper.style.display = 'block';
 
-                const rotazione = 1800 + (indice * 60) + 30;
-                setTimeout(() => { wheel.style.transform = `rotate(-${rotazione}deg)`; }, 100);
+                // Calcolo rotazione: 5 giri + offset indice (i segmenti sono da 60 gradi)
+                // Usiamo (index * 60) per allineare al triangolo superiore
+                const rotation = 1800 + (index * 60);
+                setTimeout(() => { wheel.style.transform = `rotate(${rotation}deg)`; }, 100);
 
-                // 5. Risultato finale
+                // Mostra Esito
                 setTimeout(() => {
                     containerEsito.style.display = 'block';
-                    btnReset.style.display = 'inline-block';
-                    if (esito !== "NON VINTO") {
-                        messaggioTesto.className = "vittoria";
-                        messaggioTesto.innerHTML = `🎉 COMPLIMENTI!<br>Hai vinto: <strong>${esito}</strong><br>Mostra questo schermo allo staff.`;
+                    if (vinto !== "NON VINTO") {
+                        messaggioTesto.innerHTML = `<div class="vittoria">🎉 COMPLIMENTI!<br>Hai vinto: <strong>${vinto}</strong><br>Mostra lo schermo allo staff per il ritiro.</div>`;
                     } else {
-                        messaggioTesto.className = "sconfitta";
-                        messaggioTesto.innerHTML = `Grazie per aver partecipato!<br>Purtroppo non hai vinto questa volta.`;
+                        messaggioTesto.innerHTML = `<div class="sconfitta">GRAZIE PER AVER PARTECIPATO!<br>Purtroppo oggi non hai vinto. Passa a trovarci allo stand!</div>`;
                     }
-                }, 4200);
+                }, 4300);
 
             } catch (err) {
                 alert("Errore: " + err.message);
                 btnInvia.disabled = false;
-                btnInvia.innerText = "Invia i dati e gira la ruota!";
+                btnInvia.innerText = "Registrati e Gira la Ruota!";
             }
         });
 
